@@ -5,6 +5,7 @@ module.exports = {
     return queryInterface.bulkInsert('usuario', [
       {
         usuario: 'admin',
+        cargo: 'Administrador',
         contrasena: '672caf27f5363dc833bda5099775e891',
         _usuario_creacion: '1',
         _fecha_creacion: new Date(),
@@ -13,6 +14,7 @@ module.exports = {
       },
       {
         usuario: 'rrivero',
+        cargo: 'Analista de activos fijos',
         contrasena: 'c32df4cbe60a1638e73e5b29bfaefffe',
         _usuario_creacion: '1',
         _fecha_creacion: new Date(),

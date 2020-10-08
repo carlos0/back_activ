@@ -26,6 +26,12 @@ module.exports = (sequelize, DataType) => {
         len: { args: [3, 100], msg: 'El campo \'Nombre de Usuario\' permite un mínimo de 3 caracteres y un máximo de 100 caracteres' },
       },
     },
+    cargo: {
+      type: DataType.STRING(200),
+      field: 'cargo',
+      xlabel: 'Nombre de cargo',
+      allowNull: false,
+    },
     contrasena: {
       type: DataType.STRING,
       field: 'contrasena',
@@ -76,7 +82,7 @@ module.exports = (sequelize, DataType) => {
       },
       tableName: 'usuario',
       buscarIncluye: (Persona) => usuario.findAndCountAll({
-        attributes: ['id_usuario', 'usuario', 'observaciones'],
+        attributes: ['id_usuario', 'usuario', 'cargo', 'observaciones'],
         distinct: true,
         include: [{
           model: Persona,
@@ -87,7 +93,7 @@ module.exports = (sequelize, DataType) => {
         ],
       }),
       buscarIncluyeOne: (id, Persona) => usuario.findOne({
-        attributes: ['id_usuario', 'usuario', 'estado', 'observaciones'],
+        attributes: ['id_usuario', 'usuario', 'cargo', 'estado', 'observaciones'],
         where: {
           id_usuario: id,
         },
