@@ -60,6 +60,7 @@ module.exports = (app) => {
 
   usuarioController.post = async (req, res) => {
     const usuario = req.body;
+    console.log('usuario: ', usuario);
     const t = await sequelize.transaction();
     try {
       const personaCrear = {
@@ -71,6 +72,7 @@ module.exports = (app) => {
         _usuario_creacion: usuario.token.id_usuario,
       };
       const personaC = await PersonaModel.create(personaCrear, { transaction: t });
+      console.log('personaC: ', personaC);
 
       const usuarioCrear = {
         usuario: usuario.usuario,
@@ -78,14 +80,14 @@ module.exports = (app) => {
         cargo: usuario.cargo,
         estado: 'ACTIVO',
         _usuario_creacion: usuario.token.id_usuario,
-        fid_persona: personaC.id_usuario,
+        fid_persona: personaC.id_persona,
       };
       const usuarioC = await UsuarioModel.create(usuarioCrear, { transaction: t });
       if (usuarioC) {
         t.commit();
         res.status(200).json({
           finalizado: true,
-          mensaje: 'El proveedor se guardo correctamente.',
+          mensaje: 'El usuario se guardo correctamente.',
           datos: {},
         });
       }
@@ -108,9 +110,19 @@ module.exports = (app) => {
       usuario._usuario_modificacion = usuario.token.id_usuario;
       const buscaUsuario = await UsuarioModel.findById(idUsuario);
       if (buscaUsuario) {
-        const usuarioModificar = await buscaUsuario.updateAttributes(usuario, { transaction: t });
+        const buscaPersona = await PersonaModel.findById(buscaUsuario.fid_persona);
+        if (buscaPersona) {
+          const personaModificar = await buscaPersona.updateAttributes({ transaction: t });
+        }
+        const usuarioModificar = await buscaUsuario.updateAttributes({ transaction: t });
+        res.status(200).json({
+          finalizado: true,
+          mensaje: 'El usuario se guardo correctamente.',
+          datos: {},
+        });
+      } else {
+        throw new error('No se pudo guardar el usuario');
       }
-      const personaModificar = await PersonaModel.updateAttributes(usuario, { transaction: t });
 
     } catch (error) {
       t.rollback();

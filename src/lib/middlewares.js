@@ -75,7 +75,7 @@ module.exports = (app) => {
         // verifies secret and checks exp
         const tokenDecoded = jwt.decode(token, app.get('secretJWT'));
         if (tokenDecoded) {
-          req.token = {
+          req.body.token = {
             id_usuario: tokenDecoded.id_usuario,
             id_persona: tokenDecoded.id_persona,
           };
