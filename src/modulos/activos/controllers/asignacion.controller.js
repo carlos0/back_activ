@@ -2,17 +2,17 @@ const util = require('../../../lib/util.js');
 
 module.exports = (app) => {
   const _app = app;
-  _app.controller.activo = {};
-  const activoController = _app.controller.activo;
-  const activoModel = app.src.db.models.activo;
+  _app.controller.asignacion = {};
+  const asignacionController = _app.controller.asignacion;
+  const asignacionModel = app.src.db.models.asignacion;
 
   const sequelize = app.src.db.sequelize;
 
-  activoController.get = async (req, res) => {
+  asignacionController.get = async (req, res) => {
     req.query.where = { estado: 'ACTIVO' };
     req.query.order = [['id_activo', 'DESC']];
     try {
-      const dataActivos = await activoModel.findAndCountAll(req.query);
+      const dataActivos = await asignacionModel.findAndCountAll(req.query);
       if (dataActivos != null && dataActivos.length !== 0) {
         res.status(200).json({
           finalizado: true,
@@ -35,10 +35,10 @@ module.exports = (app) => {
     }
   }
 
-  activoController.getId = async (req, res) => {
+  asignacionController.getId = async (req, res) => {
     const idActivo = req.params.id;
     try {
-      const dataActivo = await activoModel.findById(idActivo);
+      const dataActivo = await asignacionModel.findById(idActivo);
       if (dataActivo) {
         res.status(200).json({
           finalizado: true,
@@ -61,13 +61,13 @@ module.exports = (app) => {
     }
   }
 
-  activoController.post = async (req, res) => {
+  asignacionController.post = async (req, res) => {
     const activoCrear = req.body;
     activoCrear.estado = 'ACTIVO';
     activoCrear._usuario_creacion = activoCrear.token.id_usuario;
     const t = await sequelize.transaction();
     try {
-      await activoModel.create(activoCrear, { transaction: t });
+      await asignacionModel.create(activoCrear, { transaction: t });
       await t.commit();
       res.status(200).json({
         finalizado: true,
@@ -84,11 +84,11 @@ module.exports = (app) => {
     }
   }
 
-  activoController.put = async (req, res) => {
+  asignacionController.put = async (req, res) => {
     const activoModificar = req.body;
     const idActivo = req.params.id;
     try {
-      const dataActivo = await activoModel.findById(idActivo);
+      const dataActivo = await asignacionModel.findById(idActivo);
       if (dataActivo) {
         activoModificar._usuario_modificacion = activoModificar.token.id_usuario;
         await dataActivo.updateAttributes(activoModificar);
@@ -113,12 +113,12 @@ module.exports = (app) => {
     }
   }
 
-  activoController.delete = async (req, res) => {
+  asignacionController.delete = async (req, res) => {
     const idActivo = req.params.id;
     try {
-      const dataActivo = await activoModel.findById(idActivo);
+      const dataActivo = await asignacionModel.findById(idActivo);
       if (dataActivo) {
-        await activoModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_activo: idActivo } });
+        await asignacionModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_activo: idActivo } });
         res.status(200).json({
           finalizado: true,
           mensaje: 'Se elimino el activo correctamente.',

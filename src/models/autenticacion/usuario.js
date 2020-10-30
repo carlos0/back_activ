@@ -91,6 +91,7 @@ module.exports = (sequelize, DataType) => {
           required: true,
         },
         ],
+        where: { estado: 'ACTIVO' }
       }),
       buscarIncluyeOne: (id, Persona) => usuario.findOne({
         attributes: ['id_usuario', 'usuario', 'cargo', 'estado', 'observaciones'],

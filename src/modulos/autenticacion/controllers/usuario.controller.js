@@ -104,6 +104,7 @@ module.exports = (app) => {
   usuarioController.put = async (req, res) => {
     const usuario = req.body;
     const idUsuario = req.params.id;
+    console.log('idUsuario: ', idUsuario);
     const t = await sequelize.transaction();
 
     try {
@@ -112,9 +113,10 @@ module.exports = (app) => {
       if (buscaUsuario) {
         const buscaPersona = await PersonaModel.findById(buscaUsuario.fid_persona);
         if (buscaPersona) {
-          const personaModificar = await buscaPersona.updateAttributes({ transaction: t });
+          await buscaPersona.updateAttributes(usuario, { transaction: t });
         }
-        const usuarioModificar = await buscaUsuario.updateAttributes({ transaction: t });
+        await buscaUsuario.updateAttributes(usuario, { transaction: t });
+        await t.commit();
         res.status(200).json({
           finalizado: true,
           mensaje: 'El usuario se guardo correctamente.',
@@ -125,7 +127,31 @@ module.exports = (app) => {
       }
 
     } catch (error) {
-      t.rollback();
+      await t.rollback();
+      res.status(400).json({
+        finalizado: false,
+        mensaje: error.message || 'No se pudo guardar, intente mas tarde.',
+        datos: {},
+      });
+    }
+  };
+
+  usuarioController.delete = async (req, res) => {
+    const idUsuario = req.params.id;
+    console.log('idUsuario: ', idUsuario);
+    const t = await sequelize.transaction();
+
+    try {
+      await UsuarioModel.update({ _usuario_modificacion: req.body.token.id_usuario, estado: 'ELIMINADO' }, { where: { id_usuario: idUsuario } }, { transaction: t });
+      await t.commit()
+      res.status(200).json({
+        finalizado: true,
+        mensaje: 'El usuario se elimino correctamente.',
+        datos: {},
+      });
+    } catch (error) {
+      console.log('error: ', error);
+      await t.rollback();
       res.status(400).json({
         finalizado: false,
         mensaje: error.message || 'No se pudo guardar, intente mas tarde.',

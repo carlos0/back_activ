@@ -25,11 +25,45 @@ module.exports = (sequelize, DataType) => {
       xlabel: 'codigo',
       allowNull: false,
     },
+    sn: {
+      type: DataType.STRING(100),
+      field: 'sn',
+      xlabel: 'sn',
+      allowNull: true,
+    },
+    serial: {
+      type: DataType.STRING(100),
+      field: 'serial',
+      xlabel: 'serial',
+      allowNull: true,
+    },
     oficina: {
       type: DataType.STRING(200),
       field: 'oficina',
       xlabel: 'oficina',
       allowNull: true,
+    },
+    imagen: {
+      type: DataType.STRING(200),
+      field: 'imagen',
+      xlabel: 'imagen',
+      allowNull: true,
+    },
+    observaciones: {
+      type: DataType.STRING(200),
+      field: 'observaciones',
+      xlabel: 'observaciones',
+      allowNull: true,
+    },
+    estado: {
+      type: DataType.STRING(50),
+      field: 'estado',
+        xlabel: 'Estado',
+        allowNull: false,
+      defaultValue: 'ACTIVO',
+      validate: {
+        isIn: { args: [['ACTIVO', 'INACTIVO', 'EN REPARACION', 'FUERA DE SERVICIO']], msg: 'El campo estado sólo permite valores: ACTIVO INACTIVO, EN REPARACION, FUERA DE SERVICIO.' },
+      },
     },
     _usuario_creacion: {
       type: DataType.STRING(50),
@@ -44,8 +78,8 @@ module.exports = (sequelize, DataType) => {
       allowNull: true,
     },
   }, {
-    createdAt: 'fec_registro',
-    updatedAt: 'fec_modificacion',
+    createdAt: '_fecha_creacion',
+    updatedAt: '_fecha_modificacion',
     classMethods: {
       associate: (models) => {
       },
