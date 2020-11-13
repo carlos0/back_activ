@@ -1,5 +1,5 @@
 /**
- * Módulo que mapea los cargos existentes
+ * Módulo que mapea los activos existentes
  *
  * @module
  *
@@ -24,18 +24,6 @@ module.exports = (sequelize, DataType) => {
       field: 'codigo',
       xlabel: 'codigo',
       allowNull: false,
-    },
-    sn: {
-      type: DataType.STRING(100),
-      field: 'sn',
-      xlabel: 'sn',
-      allowNull: true,
-    },
-    serial: {
-      type: DataType.STRING(100),
-      field: 'serial',
-      xlabel: 'serial',
-      allowNull: true,
     },
     oficina: {
       type: DataType.STRING(200),
@@ -82,6 +70,9 @@ module.exports = (sequelize, DataType) => {
     updatedAt: '_fecha_modificacion',
     classMethods: {
       associate: (models) => {
+        activo.belongsTo(models.grupoC, { as: 'grupoc', foreignKey: { name: 'fid_grupoc', targetKey: 'id_grupoc', allowNull: false, xlabel: 'grupoc' } });
+        activo.belongsTo(models.auxiliar, { as: 'auxiliar', foreignKey: { name: 'fid_auxiliar', targetKey: 'id_auxiliar', allowNull: false, xlabel: 'auxiliar' } });
+        activo.belongsTo(models.parametro, { as: 'regional', foreignKey: { name: 'fid_regional', targetKey: 'id_parametro', allowNull: false, xlabel: 'regional' } });
       },
       tableName: 'activo',
     },

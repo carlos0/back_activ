@@ -1,16 +1,16 @@
 /**
- * Módulo que mapea subcategorias existentes
+ * Módulo que mapea auxiliar existentes
  *
  * @module
  *
  * */
 
 module.exports = (sequelize, DataType) => {
-    const subcategoria = sequelize.define('subcategoria', {
-      id_subcategoria: {
+    const auxiliar = sequelize.define('auxiliar', {
+      id_auxiliar: {
         type: DataType.INTEGER,
         primaryKey: true,
-        xlabel: 'Id subcategoria ',
+        xlabel: 'Id auxiliar',
         autoIncrement: true,
       },
       nombre: {
@@ -18,6 +18,13 @@ module.exports = (sequelize, DataType) => {
         field: 'nombre',
         xlabel: 'nombre',
         allowNull: false,
+      },
+      correlativo: {
+        type: DataType.INTEGER,
+        field: 'correlativo',
+        xlabel: 'correlativo',
+        allowNull: false,
+        defaultValue: 0,
       },
       estado: {
         type: DataType.STRING(20),
@@ -47,18 +54,18 @@ module.exports = (sequelize, DataType) => {
       classMethods: {
         associate: (models) => {
         },
-        tableName: 'subcategoria',
+        tableName: 'auxiliar',
       },
     });
   
-    subcategoria.beforeCreate((subcategoria, options) => {
+    auxiliar.beforeCreate((auxiliar, options) => {
   
     });
   
-    subcategoria.beforeUpdate((subcategoria, options) => {
+    auxiliar.beforeUpdate((auxiliar, options) => {
   
     });
   
-    return subcategoria;
+    return auxiliar;
   };
   

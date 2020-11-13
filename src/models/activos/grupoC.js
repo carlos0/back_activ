@@ -6,11 +6,11 @@
  * */
 
 module.exports = (sequelize, DataType) => {
-    const categoria = sequelize.define('categoria', {
-      id_categoria: {
+    const grupoC = sequelize.define('grupoC', {
+      id_grupoC: {
         type: DataType.INTEGER,
         primaryKey: true,
-        xlabel: 'Id categoria ',
+        xlabel: 'Id grupo Contable ',
         autoIncrement: true,
       },
       nombre: {
@@ -46,20 +46,20 @@ module.exports = (sequelize, DataType) => {
       updatedAt: '_fecha_modificacion',
       classMethods: {
         associate: (models) => {
-          categoria.belongsTo(models.subcategoria, { as: 'subcategoria', foreignKey: { name: 'fid_subcategoria', targetKey: 'id_subcategoria', allowNull: false, xlabel: 'subcategoria' } });
+          grupoC.belongsTo(models.auxiliar, { as: 'auxiliar', foreignKey: { name: 'fid_auxiliar', targetKey: 'id_auxiliar', allowNull: false, xlabel: 'auxiliar' } });
         },
-        tableName: 'categoria',
+        tableName: 'grupoC',
       },
     });
   
-    categoria.beforeCreate((categoria, options) => {
+    grupoC.beforeCreate((grupoC, options) => {
   
     });
   
-    categoria.beforeUpdate((categoria, options) => {
+    grupoC.beforeUpdate((grupoC, options) => {
   
     });
   
-    return categoria;
+    return grupoC;
   };
   
