@@ -1,4 +1,7 @@
 const util = require('../../../lib/util.js');
+const creaPdf = require('../../../services/pdf/creaPdf');
+const creaPlantilla = require('../../../services/pdf/creaPlantillas');
+const pdf2base64 = require('pdf-to-base64');
 
 module.exports = (app) => {
   const _app = app;
@@ -84,9 +87,9 @@ module.exports = (app) => {
     activoCrear._usuario_creacion = activoCrear.token.id_usuario;
     const t = await sequelize.transaction();
     try {
-      const correlativoActual = await auxiliarModel.find({ order: [['id_auxiliar', 'DESC']], limit: 1 })
+      const correlativoActual = await auxiliarModel.find({ where: { id_auxiliar: activoCrear.fid_auxiliar } })
       const gestion = activoCrear.gestion.toString().substr(-2) || new Date().getFullYear().toString().substr(-2)
-      const codigo = util.armarCodigo(activoCrear.fid_grupoc, activoCrear.fid_auxiliar, activoCrear.fid_regional, correlativoActual.correlativo, gestion);
+      const codigo = util.armarCodigo(activoCrear.fid_grupoc, activoCrear.fid_auxiliar, activoCrear.fid_regional, correlativoActual.correlativo + 1, gestion);
       activoCrear.codigo = codigo
       await activoModel.create(activoCrear, { transaction: t });
       await auxiliarModel.update({ correlativo: correlativoActual.correlativo + 1 }, { where: { id_auxiliar: correlativoActual.id_auxiliar } }, { transaction: t })
@@ -183,10 +186,15 @@ module.exports = (app) => {
                         { model: parametroModel, as: 'regional', attributes: ['id_parametro', 'nombre'] },
                       ];
       const activos = await activoModel.findAll(query);
+      const fechaNombre = new Date();
+      const plantilla = creaPlantilla.ticket(activos);
+      const pdf = await creaPdf.htmlToPdf(plantilla.html, `${fechaNombre.getFullYear()}${fechaNombre.getMonth() + 1}${fechaNombre.getDate()}${fechaNombre.getHours()}${fechaNombre.getMinutes()}${fechaNombre.getSeconds()}`);
+      const pdf64 = await pdf2base64(pdf.filename);
+      
       res.status(200).json({
         finalizado: true,
         mensaje: 'El activo se guardo correctamente.',
-        datos: activos,
+        datos: { pdf: pdf64 },
       });
     } catch (error) {
       res.status(412).json({

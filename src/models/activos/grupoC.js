@@ -26,7 +26,7 @@ module.exports = (sequelize, DataType) => {
           allowNull: false,
         defaultValue: 'ACTIVO',
         validate: {
-          isIn: { args: [['ACTIVO', 'INACTIVO']], msg: 'El campo estado sólo permite valores: ACTIVO o INACTIVO.' },
+          isIn: { args: [['ACTIVO', 'ELIMINADO']], msg: 'El campo estado sólo permite valores: ACTIVO o ELIMINADO.' },
         },
       },
       _usuario_creacion: {
@@ -46,7 +46,6 @@ module.exports = (sequelize, DataType) => {
       updatedAt: '_fecha_modificacion',
       classMethods: {
         associate: (models) => {
-          grupoC.belongsTo(models.auxiliar, { as: 'auxiliar', foreignKey: { name: 'fid_auxiliar', targetKey: 'id_auxiliar', allowNull: false, xlabel: 'auxiliar' } });
         },
         tableName: 'grupoC',
       },

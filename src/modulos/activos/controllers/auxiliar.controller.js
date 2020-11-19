@@ -5,14 +5,18 @@ module.exports = (app) => {
   _app.controller.auxiliarGC = {};
   const auxiliarController = _app.controller.auxiliarGC;
   const auxiliarModel = app.src.db.models.auxiliar;
+  const grupoCModel = app.src.db.models.grupoC;
 
   const sequelize = app.src.db.sequelize;
 
   auxiliarController.get = async (req, res) => {
-    req.query.where = { estado: 'ACTIVO' };
-    req.query.order = [['id_auxiliar', 'DESC']];
+    const query = {};
+    query.where = { estado: 'ACTIVO' };
+    query.order = [['id_auxiliar', 'DESC']];
+    query.attributes = ['id_auxiliar', 'nombre'];
+    query.include = [{ model: grupoCModel, as: 'grupoC', attributes: ['id_grupoC', 'nombre'] }]
     try {
-      const dataAuxiliar = await auxiliarModel.findAndCountAll(req.query);
+      const dataAuxiliar = await auxiliarModel.findAndCountAll(query);
       if (dataAuxiliar != null && dataAuxiliar.length !== 0) {
         res.status(200).json({
           finalizado: true,
@@ -36,9 +40,14 @@ module.exports = (app) => {
   }
 
   auxiliarController.getId = async (req, res) => {
+    const query = {};
     const idAuxiliar = req.params.id;
+    query.where = { id_auxiliar: idAuxiliar };
+    query.attributes = ['id_auxiliar', 'nombre'];
+    query.include = [{ model: grupoCModel, as: 'grupoC', attributes: ['id_grupoC', 'nombre'] }]
+
     try {
-      const dataAuxiliar = await auxiliarModel.findById(idAuxiliar);
+      const dataAuxiliar = await auxiliarModel.findOne(query);
       if (dataAuxiliar) {
         res.status(200).json({
           finalizado: true,
@@ -118,7 +127,7 @@ module.exports = (app) => {
     try {
       const dataAuxiliar = await auxiliarModel.findById(idAuxiliar);
       if (dataAuxiliar) {
-        await auxiliarModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_activo: idAuxiliar } });
+        await auxiliarModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_auxiliar: idAuxiliar } });
         res.status(200).json({
           finalizado: true,
           mensaje: 'Se elimino el auxiliar de grupo contable correctamente.',

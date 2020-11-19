@@ -118,7 +118,7 @@ module.exports = (app) => {
     try {
       const dataGrupoC = await grupoCModel.findById(idgrupoC);
       if (dataGrupoC) {
-        await grupoCModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_activo: idActivo } });
+        await grupoCModel.update({ estado: 'ELIMINADO', _usuario_modificacion: req.body.token.id_usuario }, { where: { id_grupoC: idgrupoC } });
         res.status(200).json({
           finalizado: true,
           mensaje: 'Se elimino el grupo contable correctamente.',

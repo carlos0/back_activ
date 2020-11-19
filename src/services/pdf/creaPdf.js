@@ -7,7 +7,7 @@ const htmlToPdf = (html, nombre) => {
       if (err) {
         return reject(err);
       }
-      return resolve(`Se generó el pdf correctamente, la dirección del pdf es: ${res}`);
+      return resolve(res);
     });
   });
 };
