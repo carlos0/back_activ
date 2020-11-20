@@ -24,18 +24,18 @@ const ticket = (datos) => {
                         <table width="100%">
                             <tr>
                                 <td class="imagen" width="25%" colspan="2">
-                                    <img src="${image}" alt="" width="40px" height="20px">
+                                    <img src="${image}" alt="" width="60px" height="30px">
                                 </td>
                             </tr>
                             <tr>
 
                                 <td class="qr" width="25%">
-                                    <img src="data:image/png;base64,${qrImg}" alt="" width="30px" height="30px">
+                                    <img src="data:image/png;base64,${qrImg}" alt="" width="40px" height="40px">
                                 </td>
 
                                 <td class="texto" width="50%">
                                     <p class="codigo">${datos[i].codigo}</p>
-                                    <p class="texto2">${datos[i].nombre}</p>
+                                    <!--<p class="texto2">${datos[i].nombre}</p>-->
                                     <p class="texto2">${datos[i].grupoc.nombre}</p>
                                     <p class="texto2">${datos[i].auxiliar.nombre}</p>
                                 </td>
@@ -48,18 +48,18 @@ const ticket = (datos) => {
                         <table width="100%">
                         <tr>
                         <td class="imagen" width="25%" colspan="2">
-                            <img src="${image}" alt="" width="40px" height="20px">
+                            <img src="${image}" alt="" width="60px" height="30px">
                         </td>
                     </tr>
                     <tr>
 
                         <td class="qr" width="25%">
-                            <img src="data:image/png;base64,${qrImg}" alt="" width="30px" height="30px">
+                            <img src="data:image/png;base64,${qrImg}" alt="" width="40px" height="40px">
                         </td>
 
                         <td class="texto" width="50%">
                             <p class="codigo">${datos[i].codigo}</p>
-                            <p class="texto2">${datos[i].nombre}</p>
+                            <!--<p class="texto2">${datos[i].nombre}</p>-->
                             <p class="texto2">${datos[i].grupoc.nombre}</p>
                             <p class="texto2">${datos[i].auxiliar.nombre}</p>
                         </td>
@@ -106,15 +106,15 @@ const ticket = (datos) => {
                 .texto {
                     text-align: center;
                     font-family: 'Courier New', Courier, monospace;
-                    line-height : 5px;
+                    line-height : 6px;
                     align-self: center
                 }
                 .codigo {
-                    font-size: 8px;
+                    font-size: 13px;
                     font-weight: bold;
                 }
                 .texto2 {
-                    font-size: 6.5px;
+                    font-size: 7.5px;
                 }
                 .principal  tr  td {
                     border-radius: 10px;
