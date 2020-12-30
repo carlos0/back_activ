@@ -18,11 +18,11 @@ module.exports = (app) => {
     const query = {};
     query.where = { estado: 'ACTIVO' };
     query.order = [['id_activo', 'DESC']];
-    query.attributes = ['id_activo', 'nombre', 'codigo', 'oficina', 'observaciones']
+    query.attributes = ['id_activo', 'nombre', 'codigo', 'oficina', 'sn', 'observaciones'];
     query.include = [{ model: grupoCModel, as: 'grupoc', attributes: ['id_grupoC', 'nombre'] },
                          { model: auxiliarModel, as: 'auxiliar', attributes: ['id_auxiliar', 'nombre'] },
                          { model: parametroModel, as: 'regional', attributes: ['id_parametro', 'nombre'] },
-                        ];
+    ];
     try {
       const dataActivos = await activoModel.findAndCountAll(query);
       if (dataActivos != null && dataActivos.length !== 0) {
@@ -45,18 +45,18 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
+  };
 
   activoController.getId = async (req, res) => {
     const idActivo = req.params.id;
     const query = {};
     query.where = { id_activo: idActivo };
-    query.attributes = ['id_activo', 'nombre', 'codigo', 'oficina', 'observaciones']
-    query.include = [ { model: grupoCModel, as: 'grupoc', attributes: ['id_grupoC', 'nombre'] },
+    query.attributes = ['id_activo', 'nombre', 'codigo', 'oficina', 'sn', 'observaciones'];
+    query.include = [{ model: grupoCModel, as: 'grupoc', attributes: ['id_grupoC', 'nombre'] },
                       { model: auxiliarModel, as: 'auxiliar', attributes: ['id_auxiliar', 'nombre'] },
                       { model: parametroModel, as: 'regional', attributes: ['id_parametro', 'nombre'] },
-                    ];
-  try {
+    ];
+    try {
       const dataActivo = await activoModel.find(query);
       if (dataActivo) {
         res.status(200).json({
@@ -78,8 +78,8 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
-  
+  };
+
   activoController.post = async (req, res) => {
     const activoCrear = req.body;
     console.log('activoCrear: ', activoCrear);
@@ -87,12 +87,12 @@ module.exports = (app) => {
     activoCrear._usuario_creacion = activoCrear.token.id_usuario;
     const t = await sequelize.transaction();
     try {
-      const correlativoActual = await auxiliarModel.find({ where: { id_auxiliar: activoCrear.fid_auxiliar } })
-      const gestion = activoCrear.gestion.toString().substr(-2) || new Date().getFullYear().toString().substr(-2)
+      const correlativoActual = await auxiliarModel.find({ where: { id_auxiliar: activoCrear.fid_auxiliar } });
+      const gestion = activoCrear.gestion.toString().substr(-2) || new Date().getFullYear().toString().substr(-2);
       const codigo = util.armarCodigo(activoCrear.fid_grupoc, activoCrear.fid_auxiliar, activoCrear.fid_regional, correlativoActual.correlativo + 1, gestion);
-      activoCrear.codigo = codigo
+      activoCrear.codigo = codigo;
       await activoModel.create(activoCrear, { transaction: t });
-      await auxiliarModel.update({ correlativo: correlativoActual.correlativo + 1 }, { where: { id_auxiliar: correlativoActual.id_auxiliar } }, { transaction: t })
+      await auxiliarModel.update({ correlativo: correlativoActual.correlativo + 1 }, { where: { id_auxiliar: correlativoActual.id_auxiliar } }, { transaction: t });
       await t.commit();
       res.status(200).json({
         finalizado: true,
@@ -107,7 +107,7 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
+  };
 
   activoController.put = async (req, res) => {
     const activoModificar = req.body;
@@ -147,7 +147,7 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
+  };
 
   activoController.delete = async (req, res) => {
     const idActivo = req.params.id;
@@ -174,23 +174,23 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
+  };
 
   activoController.generarTicket = async (req, res) => {
     try {
       const query = {};
       query.where = { id_activo: req.body.activos };
-      query.attributes = ['id_activo', 'nombre', 'codigo'];
-      query.include = [ { model: grupoCModel, as: 'grupoc', attributes: ['id_grupoC', 'nombre'] },
+      query.attributes = ['id_activo', 'nombre', 'codigo', 'sn'];
+      query.include = [{ model: grupoCModel, as: 'grupoc', attributes: ['id_grupoC', 'nombre'] },
                         { model: auxiliarModel, as: 'auxiliar', attributes: ['id_auxiliar', 'nombre'] },
                         { model: parametroModel, as: 'regional', attributes: ['id_parametro', 'nombre'] },
-                      ];
+      ];
       const activos = await activoModel.findAll(query);
       const fechaNombre = new Date();
       const plantilla = creaPlantilla.ticket(activos);
       const pdf = await creaPdf.htmlToPdf(plantilla.html, `${fechaNombre.getFullYear()}${fechaNombre.getMonth() + 1}${fechaNombre.getDate()}${fechaNombre.getHours()}${fechaNombre.getMinutes()}${fechaNombre.getSeconds()}`);
       const pdf64 = await pdf2base64(pdf.filename);
-      
+
       res.status(200).json({
         finalizado: true,
         mensaje: 'El activo se guardo correctamente.',
@@ -203,6 +203,5 @@ module.exports = (app) => {
         datos: {},
       });
     }
-  }
-
+  };
 };

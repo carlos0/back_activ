@@ -1,172 +1,74 @@
-# Proyecto Base Backend
+# Proyecto Base Backend 
+## Archivos de configuración
 
-Despues de ejecutar las instrucciones para instalar el gestor de base de datos `postgres` descritos paso a paso en el archivo ([SERVER.md](SERVER.md)).
+Para modificar los datos de conexion a la base de datos y para modificar el puerto de conexion de desarrollo modificar :
 
-#### Pasos para instalar GIT
+- src/config/config.json
 
-- Para sistemas basados en UNIX
-> Revisar como se realiza la instalacion y configuracion en ([SERVER.md](SERVER.md))
+Para parametros de configuración :
 
-Despues de tener lo basico necesitamos instalar nuestra aplicación
+- src/config/config.js
 
-#### Creación de la Base de Datos
-Se debe crear la base de datos para la ejecución del backend, para ello conectarse con el siguiente comando:
-```sh
-$ psql -U postgres -h localhost
-psql (9.5.4)
-SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
-Type "help" for help.
+## Instalación NVM, Node y NPM
 
-postgres=#
+Descargar el instalador de nvm y renombrarlo con "install_nvm.sh":
 ```
-Crear un usuario que adiministre la base de datos del sistema:
-```sh
-postgres=# CREATE USER user_facturacion WITH PASSWORD 'pass_facturacion';
-CREATE ROLE
-```
-Para verificar que el usuario se creo correctamente:
-```sh
-postgres=# \du
-Role name         |                         Attributes                         | Member of
-------------------+------------------------------------------------------------+----------
-postgres          | Superuser, Create role, Create DB, Replication, Bypass RLS | {}
-user_facturacion  |                                                            | {}
-
+$ curl -sL https://raw.githubusercontent.com/creationix/nvm/v0.24.0/install.sh -o install_nvm.sh
 ```
 
-Luego creamos la base de datos:
-```sh
-postgres=# CREATE DATABASE facturacion_db WITH OWNER user_facturacion;
-CREATE DATABASE
+Verifica su existencia si el archivo se descargó satisfactoriamente:
 ```
-Para verificar que la base de datos se creo correctamente:
-```sh
-postgres=# \l
-                                        List of databases
-Name            |     Owner     | Encoding |   Collate   |    Ctype    |   Access privileges   
-----------------+---------------+----------+-------------+-------------+-----------------------
-facturacion_db  | postgres      | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
-template0       | postgres      | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          + 
-                |               |          |             |             | postgres=CTc/postgres
-template1       | postgres      | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
-		            |               |          |             |             | postgres=CTc/postgres
-(1 rows)
-
-```
-Asignamos todos los privilegios al usuario creado:
-```sh
-postgres=# GRANT ALL PRIVILEGES ON DATABASE facturacion_db to user_facturacion;
-GRANT
-```
-Para verificar esta asignación de privilegios:
-```sh
-postgres=# \l
-                                      List of databases
-Name            |     Owner         | Encoding |   Collate   |    Ctype    |        Access privileges        
-----------------+-------------------+----------+-------------+-------------+--------------------------------------- 
-facturacion_db  | user_facturacion  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/user_facturacion                 +
-                |                   |          |             |             | user_facturacion=CTc/user_facturacion
-template0       | postgres          | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
-                |                   |          |             |             | postgres=CTc/postgres
-template1       | postgres          | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
-                |                   |          |             |             | postgres=CTc/postgres
-(1 rows)
-
+$ nano install_nvm.sh
 ```
 
-Para eliminar la base de datos creada o el usuario se digitan estas lineas de codigo en la terminal abierta de postgres
-```sh
-postgres=# DROP DATABASE facturacion_db;
-DROP DATABASE
-
+Ejecuta el instalador
 ```
-```sh
-postgres=# DROP USER user_facturacion;
-DROP ROLE
-
-```
-Para salir de la consola de postgres
-
-> **CTRL** + **d**
-
-
-#### Instalación
-
-Para instalar el proyecto debemos clonarlo desde nuestro repositorio:
-
-```sh
-$ git clone git@gitlab.geo.gob.bo:agetic/backend_base-sisnodi-backend.git
+$ bash install_nvm.sh
 ```
 
-Ingresar a la carpeta:
-```sh
-$ cd backend_base-sisnodi-backend
-```
-Podemos verificar que estamos en el branch master:
+Reiniciar la consola para que surtan efecto los cambios
+> **CTRL** + **d** , **CTRL** + **c** o **exit**
 
+Verificar la existencia de nvm
 ```
-$ git status
-```
-Nos devolverá:
-```
-On branch master
-```
-(Opcional) Si necesitamos trabajar un branch específico (en este ejemplo, el nombre del branch es `branch_copia_master`) ejecutamos:
-
-```
-$ git checkout branch_copia_master
+$ nvm --version
 ```
 
-Al volver a verificar con git status:
+Descargar la versión de node deseada **(la versión LTS)**:
 ```
-$ git status
+$ nvm install 10
+```
+#### Indicar que version usaremos
+
+Para ello usaremos la siguiente linea de comando
+```
+$ nvm use 10
 ```
 
-Se obtiene como respuesta que el proyecto se sitúa en el branch elegido:
-```
-On branch branch_copia_master
-```
+#### Instalar dependencias npm
 
-Para instalar la aplicación, se tienen las siguientes opciones:
+Ir a la carpeta del proyecto y ejecutar
 
-###### Instalar dependencias del proyecto
-
-Ejecutar el comando npm install que instalará todas las dependencias que el proyecto necesita:
 ```
 $ npm install
 ```
 
-#### Archivos de Configuración
+#### Instalar paquetes necesarios 
 
-Para modificar los datos de conexion a la base de datos y para modificar el puerto de conexion de **desarrollo** realizar una copia del archivo `src/config/config.environment.js.sample` y cambiar los datos de conexión a la base de datos respectiva, el archivo debería ser nombrado de la siguiente manera:
+Instalar de manera global:
 
-- `src/config/config.development.js`
-
-Para modificar los datos de conexion a la base de datos y para modificar el puerto de conexion de **test** realizar una copia del archivo `src/config/config.environment.js.sample` y cambiar los datos de conexión a la base de datos respectiva, el archivo debería ser nombrado de la siguiente manera:
-
-- `src/config/config.test.js`
-
-En ambos casos, es importante cambiar lo siguiente:
-- `username - nombre de usuario de la base de datos`
-- `password - contraseña del usuario de la base de datos`
-- `database - nombre de la base de datos`
-- `host - servidor donde se encuentra la base de datos`
-- `demás variables`
-
-#### Configuración del entorno
-
-Para configurar la conexión a la base de datos de los seeders y migraciones debemos realizar una copia del archivo `config/config.js.sample` y renombrarlo bajo el nombre `config/config.js` con los datos necesarios para la conexión a la base de datos (este archivo es utilizado para los seeders y las migraciones).
-
-Para configurar variables del sistema se debe realizar una copia del archivo `config/app.json.sample` y renombrarlo bajo el nombre de `config/app.json`.
-Para el archivo `config/app.json` se pueden realizar la siguientes configuraciones:
-
-- Modificar la configuración de los servicios, modificar según el ambiente en el que se vaya a levantar la aplicación (development, test, production).
-
+```
+$ npm install -g sequelize sequelize-cli
+$ npm install -g pg pg-hstore
+$ npm install -g nodemon
+```
 ## Iniciar la aplicación
 
 Las opciones de ejecución son las siguientes:
 + Genera o regenera las tablas necesarias en la base de datos y ejecuta los seeders y migrations.
 ```
+$ npm start 
+$ ctrl + C 
 $ npm run setup
 ```
 
@@ -176,89 +78,50 @@ $ npm run startdev
 ```
 + Levanta el sistema en modo normal
 ```
-$ npm run start
-```
-+ Ejecuta el eslint para verificar el estandar de programacion, actualmente esta basado en: [https://github.com/airbnb/javascript](https://github.com/airbnb/javascript).
-```
-$ npm run lint
-```
-+ Genera la documentacion del sistema
-```
-$ npm run apidoc
+$ npm start
 ```
 
-##### RAM
+# para levantar en producción
 
-NodeJS por defecto utiliza 1.76GB en máquinas de 64 bits, para aumentar este parámetro es necesario utilizar el siguiente comando: "--max_old_space_size=".
++ En el servidor ir a la carpeta < /home/administrador/app >
++ Copiar el proyecto
++ instalar dependencias npm
 
-Para hacer esto, se debe modificar el archivo package.json, en la opción start, línea 7 aproximadamente, por ejemplo para utilizar 4GB de RAM cambiar por:
+## Instalar PM2
 
-```sh
-...
-...
-  "scripts": {
-    "start": "babel-node --max_old_space_size=4096 index.js",
-    ...
-  }
-...
-...
 ```
-Referencia:
-> http://prestonparry.com/articles/IncreaseNodeJSMemorySize/
-
-
-## Configuración de supervisor
-Si se desea hacer correr la aplicación mediante `supervisor` se debe realizar la siguiente configuración:
-
-Navegar hasta la ruta:
-```sh
-$ cd /etc/supervisor/conf.d/
-```
-Crear un archivo para hacer correr la aplicación de backend, en este ejemplo, se definirá el archivo bajo el nombre de `facturacion_backend`:
-```sh
-$ sudo touch facturacion_backend.conf
-```
-Nota
-- Si no te no te permite modificar el archivo facturacion_backend.conf
-```
-$ sudo chmod 777 facturacion_backend.conf
-```
-Y colocar el siguiente contenido:
-
-##### Ambiente de desarrollo
-
-```sh
-[program:facturacion_backend]
-command=/home/usuario/.nvm/versions/node/v6.10.1/bin/npm start
-directory=/home/usuario/backend_base-sisnodi-backend
-autostart=true
-autorestart=true
-stderr_logfile=/var/log/facturacion_backend.err.log
-stdout_logfile=/var/log/facturacion_backend.out.log
-user=usuario
+$ npm install pm2 -g
 ```
 
-##### Reiniciar "supervisor"
-Cuando se hagan cambios y se requiere reiniciar el servicio "supervisor" para que se ejecute la aplicación:
-```sh
-$ sudo /etc/init.d/supervisor restart
-```
-Para verificar que la aplicación este efectivamente corriendo, se puede ejecutar el siguiente comando, y verificar que la aplicación este corriendo en el puerto configurado:
-```sh
-$ netstat -ltpn
+### Ejecutar el proyecto en pm2
 
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
-tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -               
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -               
-tcp        0      0 0.0.0.0:5432            0.0.0.0:*               LISTEN      -               
-tcp6       0      0 :::4000                 :::*                    LISTEN      32274/nodejs
-tcp6       0      0 :::3000                 :::*                    LISTEN      4381/gulp
+```
+$ pm2 start index.js --name proyecto1
+```
+### comandos pm2
+
+```
+$ pm2 list
 ```
 
-Ó se puede revisar las tareas del `supervisor`, buscar el nombre de la tarea y su respectivo estado:
+debera aparecer similar a
+┌─────┬────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────┬──────────┐
+│ id  │ name       │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user │ watching │
+├─────┼────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────┼──────────┤
+│ 1   │ proyecto1  │ default     │ 0.0.1   │ fork    │ 30324    │ 22D    │ 111  │ online    │ 0%       │ 34.1mb   │ adm… │ disabled │
+│ 0   │ proyecto2  │ default     │ 0.0.1   │ fork    │ 17751    │ 50D    │ 26   │ online    │ 0%       │ 58.1mb   │ adm… │ disabled │
 
-```sh
-$ sudo supervisorctl
 
-facturacion_backend                   RUNNING    pid 4617, uptime 3 days, 21:41:05
+para detener el proyecto
+
 ```
+$ pm2 stop <id>
+```
+
+para eliminar el proyecto de pm2
+
+```
+$ pm2 delete <id>
+```
+
+para otros comandos revisar: https://pm2.keymetrics.io/docs/usage/pm2-doc-single-page/

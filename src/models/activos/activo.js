@@ -31,10 +31,10 @@ module.exports = (sequelize, DataType) => {
       xlabel: 'oficina',
       allowNull: true,
     },
-    imagen: {
+    sn: {
       type: DataType.STRING(200),
-      field: 'imagen',
-      xlabel: 'imagen',
+      field: 'sn',
+      xlabel: 'sn',
       allowNull: true,
     },
     observaciones: {
@@ -46,8 +46,8 @@ module.exports = (sequelize, DataType) => {
     estado: {
       type: DataType.STRING(50),
       field: 'estado',
-        xlabel: 'Estado',
-        allowNull: false,
+      xlabel: 'Estado',
+      allowNull: false,
       defaultValue: 'ACTIVO',
       validate: {
         isIn: { args: [['ACTIVO', 'INACTIVO', 'EN REPARACION', 'FUERA DE SERVICIO']], msg: 'El campo estado sólo permite valores: ACTIVO INACTIVO, EN REPARACION, FUERA DE SERVICIO.' },
